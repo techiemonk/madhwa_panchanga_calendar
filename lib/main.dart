@@ -54,10 +54,9 @@ class AppState extends ChangeNotifier {
       await flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
           ?.requestNotificationsPermission();
-      
-      // Select a valid date within range if today is out of range
-      if (_selectedDate.isBefore(DateTime(2025, 12, 8)) || _selectedDate.isAfter(DateTime(2026, 3, 19))) {
-        _selectedDate = DateTime(2025, 12, 8);
+
+      if (_selectedDate.isBefore(DateTime(2026, 1, 1)) || _selectedDate.isAfter(DateTime(2026, 3, 19))) {
+        _selectedDate = DateTime(2026, 1, 1);
       }
 
       await fetchPanchangaForDate(_selectedDate);
@@ -101,11 +100,10 @@ class AppState extends ChangeNotifier {
 
   void resetToToday() {
     DateTime today = DateTime.now();
-    // Only reset to today if today is within the data range
-    if (today.isAfter(DateTime(2025, 12, 7)) && today.isBefore(DateTime(2026, 3, 20))) {
+    if (today.isAfter(DateTime(2025, 12, 31)) && today.isBefore(DateTime(2026, 3, 20))) {
       _selectedDate = today;
     } else {
-      _selectedDate = DateTime(2025, 12, 8);
+      _selectedDate = DateTime(2026, 1, 1);
     }
     fetchPanchangaForDate(_selectedDate);
   }
@@ -123,28 +121,44 @@ class AppState extends ChangeNotifier {
 
     Map<String, Map<String, String>> translations = {
       "samvastara": {"Sri Vishvavasu samvastara": _language == 'Kannada' ? "ಶ್ರೀ ವಿಶ್ವಾವಸು ಸಂವತ್ಸರ" : "श्री विश्ववसु संवत्सर"},
-      "ayana": {"Dakshinayaana": _language == 'Kannada' ? "ದಕ್ಷಿಣಾಯಣ" : "दक्षिणायण", "Uttarayana": _language == 'Kannada' ? "ಉತ್ತರಾಯಣ" : "उत्तरायण"},
-      "rutu": {"Hemanta rutu": _language == 'Kannada' ? "ಹೇಮಂತ ಋತು" : "हेमन्त ऋतु", "Magha rutu": _language == 'Kannada' ? "ಶಿಶಿರ ಋತು" : "शिशिर ऋतु"},
-      "masa": {"Margashira masa": _language == 'Kannada' ? "ಮಾರ್ಗಶಿರ ಮಾಸ" : "ಮಾರ್ಗಶೀರ್ಷ ಮಾಸ", "Pushya masa": _language == 'Kannada' ? "ಪುಷ್ಯ ಮಾಸ" : "ಪುಷ್ಯ ಮಾಸ", "Shishira masa": _language == 'Kannada' ? "ಮಾಘ ಮಾಸ" : "ಮಾಘ ಮಾಸ", "Phalguna masa": _language == 'Kannada' ? "ಫಾಲ್ಗುಣ ಮಾಸ" : "ಫಾಲ್ಗುಣ ಮಾಸ"},
-      "paksha": {"Krishna paksha": _language == 'Kannada' ? "ಕೃಷ್ಣ ಪಕ್ಷ" : "ಕೃಷ್ಣ ಪಕ್ಷ", "Shukla paksha": _language == 'Kannada' ? "ಶುಕ್ಲ ಪಕ್ಷ" : "ಶುಕ್ಲ ಪಕ್ಷ"},
+      "ayana": {"Uttarayana": _language == 'Kannada' ? "ಉತ್ತರಾಯಣ" : "उत्तरायण", "Dakshinayaana": _language == 'Kannada' ? "ದಕ್ಷಿಣಾಯಣ" : "दक्षिणायण"},
+      "rutu": {"Hemanta": _language == 'Kannada' ? "ಹೇಮಂತ" : "हेमन्त", "Magha": _language == 'Kannada' ? "ಮಾಘ" : "माघ"},
+      "masa": {"Pushya": _language == 'Kannada' ? "ಪುಷ್ಯ" : "पौष", "Shishira": _language == 'Kannada' ? "ಶಿಶಿರ" : "शिशिर", "Phalguna": _language == 'Kannada' ? "ಫಾಲ್ಗುಣ" : "फाल्गुन"},
+      "paksha": {"Krishna": _language == 'Kannada' ? "ಕೃಷ್ಣ ಪಕ್ಷ" : "कृष्ण पक्ष", "Shukla": _language == 'Kannada' ? "ಶುಕ್ಲ ಪಕ್ಷ" : "शुक्ल पक्ष"},
       "tithi": {
-        "Pratipada Tithi": _language == 'Kannada' ? "ಪಾಡ್ಯ" : "प्रतिपदा", "Dwiteeya Tithi": _language == 'Kannada' ? "ಬಿದಿಗೆ" : "द्वितीया", "Truteeya Tithi": _language == 'Kannada' ? "ತದಿಗೆ" : "तृतीया",
-        "Chaturthi Tithi": _language == 'Kannada' ? "ಚತುರ್ಥಿ" : "चतुर्थी", "Panchami Tithi": _language == 'Kannada' ? "ಪಂಚಮಿ" : "पञ्चमी", "Shashti Tithi": _language == 'Kannada' ? "ಷಷ್ಠಿ" : "षष्ठी",
-        "Saptami Tithi": _language == 'Kannada' ? "ಸಪ್ತಮಿ" : "सप्तमी", "Ashtami Tithi": _language == 'Kannada' ? "ಅಷ್ಟಮಿ" : "अष्टमी", "Navami Tithi": _language == 'Kannada' ? "ನವಮಿ" : "नवमी",
-        "Dashami Tithi": _language == 'Kannada' ? "ದಶಮಿ" : "दशमी", "Ekadashi Tithi": _language == 'Kannada' ? "ಏಕಾದಶಿ" : "एकादशी", "Dwadashi Tithi": _language == 'Kannada' ? "ದ್ವಾದಶಿ" : "द्वादशी",
-        "Trayodashi Tithi": _language == 'Kannada' ? "ತ್ರಯೋದಶಿ" : "त्रयोदशी", "Chaturdashi Tithi": _language == 'Kannada' ? "ಚತುರ್ದಶಿ" : "चतुर्दशी", "Amavasya Tithi": _language == 'Kannada' ? "ಅಮಾವಾಸ್ಯೆ" : "अमावास्या", "Hunnime Tithi": _language == 'Kannada' ? "ಹುಣ್ಣಿಮೆ" : "पूर्णिमा",
+        "Pratipada": _language == 'Kannada' ? "ಪಾಡ್ಯ" : "प्रतिपदा", "Dwiteeya": _language == 'Kannada' ? "ಬಿದಿಗೆ" : "द्वितीया", "Truteeya": _language == 'Kannada' ? "ತದಿಗೆ" : "तृतीया",
+        "Chaturthi": _language == 'Kannada' ? "ಚತುರ್ಥಿ" : "चतुर्थी", "Panchami": _language == 'Kannada' ? "ಪಂಚಮಿ" : "पञ्चमी", "Shashti": _language == 'Kannada' ? "ಷಷ್ಠಿ" : "षष्ठी",
+        "Saptami": _language == 'Kannada' ? "ಸಪ್ತಮಿ" : "सप्तमी", "Ashtami": _language == 'Kannada' ? "ಅಷ್ಟಮಿ" : "अष्टमी", "Navami": _language == 'Kannada' ? "ನವಮಿ" : "नवामी",
+        "Dashami": _language == 'Kannada' ? "ದಶಮಿ" : "दशमी", "Ekadashi": _language == 'Kannada' ? "ಏಕಾದಶಿ" : "एकादशी", "Dwadashi": _language == 'Kannada' ? "ದ್ವಾದಶಿ" : "द्वादशी",
+        "Trayodashi": _language == 'Kannada' ? "ತ್ರಯೋದಶಿ" : "त्रयोदशी", "Chaturdashi": _language == 'Kannada' ? "ಚತುರ್ದಶಿ" : "चतुर्दशी", "Amavasya": _language == 'Kannada' ? "ಅಮಾವಾಸ್ಯೆ" : "अमावास्या", "Hunnime": _language == 'Kannada' ? "ಹುಣ್ಣಿಮೆ" : "पूर्णिमा",
       },
       "nakshatra": {
-        "Ashwini nakshatra": _language == 'Kannada' ? "ಅಶ್ವಿನಿ" : "अश्विनी", "Bharani nakshatra": _language == 'Kannada' ? "ಭರಣಿ" : "भरणी", "Kruttika nakshatra": _language == 'Kannada' ? "ಕೃತ್ತಿಕಾ" : "कृत्तिका",
-        "Rohini nakshatra": _language == 'Kannada' ? "ರೋಹಿಣಿ" : "रोहिणी", "Mrugashira nakshatra": _language == 'Kannada' ? "ಮೃಗಶಿರ" : "मृगशिरा", "Ardhraa nakshatra": _language == 'Kannada' ? "ಆರಿದ್ರ" : "आर्द्रा",
-        "Punarvasu nakshatra": _language == 'Kannada' ? "ಪುನರ್ವಸು" : "पुनर्वसु", "Pushya nakshatra": _language == 'Kannada' ? "ಪುಷ್ಯ" : "पुष्य", "Ashlesha nakshatra": _language == 'Kannada' ? "ಆಶ್ಲೇಷ" : "आश्लेषा",
-        "Magha nakshatra": _language == 'Kannada' ? "ಮಘ" : "मघा", "PoorvaPhalguni nakshatra": _language == 'Kannada' ? "ಪುಬ್ಬಾ" : "पूर्वाफाल्गुनी", "Anuradha nakshatra": _language == 'Kannada' ? "ಅನುರಾಧ" : "अनुराधा",
+        "Jyeshtha": _language == 'Kannada' ? "ಜ್ಯೇಷ್ಠ" : "ज्येष्ठा", "Mrugashira": _language == 'Kannada' ? "ಮೃಗಶಿರ" : "मृगशिरा", "Ardhraa": _language == 'Kannada' ? "ಆರಿದ್ರ" : "आर्द्रा",
+        "Punarvasu": _language == 'Kannada' ? "ಪುನರ್ವಸು" : "पुनर्वसु", "Pushya": _language == 'Kannada' ? "ಪುಷ್ಯ" : "पुष्य", "Ashlesha": _language == 'Kannada' ? "ಆಶ್ಲೇಷ" : "आश्लेषा",
+        "Magha": _language == 'Kannada' ? "ಮಘ" : "मघा", "PoorvaPhalguni": _language == 'Kannada' ? "ಪೂರ್ವ ಫಲ್ಗುಣಿ" : "पूर्वाफाल्गुनी", "UttaraPhalguni": _language == 'Kannada' ? "ಉತ್ತರ ಫಲ್ಗುಣಿ" : "उत्तराफाल्गुनी",
+        "Hasta": _language == 'Kannada' ? "ಹಸ್ತ" : "हस्ता", "Chittaa": _language == 'Kannada' ? "ಚಿತ್ತಾ" : "चित्रा", "Swaati": _language == 'Kannada' ? "ಸ್ವಾತಿ" : "स्वाती",
+        "Vishaakha": _language == 'Kannada' ? "ವಿಶಾಖ" : "विशाखा", "Anuradha": _language == 'Kannada' ? "ಅನುರಾಧ" : "अनुराधा", "Moola": _language == 'Kannada' ? "ಮೂಲ" : "मूल",
+        "Purvaashadha": _language == 'Kannada' ? "ಪೂರ್ವಾಷಾಢ" : "पूर्वाषाढा", "Uttaraashadha": _language == 'Kannada' ? "ಉತ್ತರಾಷಾಢ" : "उत्तराषाढा", "Shravana": _language == 'Kannada' ? "ಶ್ರವಣ" : "श्रवण",
+        "Dhanishtha": _language == 'Kannada' ? "ಧನಿಷ್ಠ" : "धनिष्ठा", "Shatabisha": _language == 'Kannada' ? "ಶತಭಿಷ" : "शतभिषा", "Purvaabhaadra": _language == 'Kannada' ? "ಪೂರ್ವಾಭಾದ್ರ" : "पूर्वभाद्रपदा",
+        "Uttaraabhaadra": _language == 'Kannada' ? "ಉತ್ತರಾಭಾದ್ರ" : "उत्तरभाद्रपदा", "Revathi": _language == 'Kannada' ? "ರೇವತಿ" : "रेवती", "Ashwini": _language == 'Kannada' ? "ಅಶ್ವಿನಿ" : "अश्विनी",
+        "Bharani": _language == 'Kannada' ? "ಭರಣಿ" : "भरणी", "Kruttika": _language == 'Kannada' ? "ಕೃತ್ತಿಕಾ" : "कृत्तिका", "Rohini": _language == 'Kannada' ? "ರೋಹಿಣಿ" : "रोहिणी",
       },
       "yoga": {
-        "Brahma yoga": _language == 'Kannada' ? "ಬ್ರಹ್ಮ" : "ब्रह्म", "Aindra yoga": _language == 'Kannada' ? "ಐಂದ್ರ" : "ऐन्द्र", "Vaidhruti yoga": _language == 'Kannada' ? "ವೈಧೃತಿ" : "वैधृति",
+        "Vruddhi": _language == 'Kannada' ? "ವೃದ್ಧಿ" : "वृद्धि", "Shukla": _language == 'Kannada' ? "ಶುಕ್ಲ" : "शुक्ल", "Brahma": _language == 'Kannada' ? "ಬ್ರಹ್ಮ" : "ब्रह्म",
+        "Aindra": _language == 'Kannada' ? "ಐಂದ್ರ" : "ऐन्द्र", "Vishkhamba": _language == 'Kannada' ? "ವಿಷ್ಕಂಭ" : "विष्कम्भ", "Preeti": _language == 'Kannada' ? "ಪ್ರೀತಿ" : "प्रीति",
+        "Ayushmaan": _language == 'Kannada' ? "ಆಯುಷ್ಮಾನ್" : "आयुष्मान", "Sowbhagya": _language == 'Kannada' ? "ಸೌಭಾಗ್ಯ" : "सौभाग्य", "Shobhana": _language == 'Kannada' ? "ಶೋಭನ" : "शोभन",
+        "Atiganda": _language == 'Kannada' ? "ಅತಿಗಂಡ" : "अतिगण्ड", "Suka": _language == 'Kannada' ? "ಸುಕರ್ಮ" : "सुकर्मा", "Dhruti": _language == 'Kannada' ? "ಧೃತಿ" : "धृति",
+        "Shoola": _language == 'Kannada' ? "ಶೂಲ" : "शूल", "Ganda": _language == 'Kannada' ? "ಗಂಡ" : "गण्ड", "Dhruva": _language == 'Kannada' ? "ಧ್ರುವ" : "ध्रुव",
+        "Vyaaghaa": _language == 'Kannada' ? "ವ್ಯಾಘಾತ" : "व्याघात", "Harshana": _language == 'Kannada' ? "ಹರ್ಷಣ" : "हर्षण", "Vajra": _language == 'Kannada' ? "ವಜ್ರ" : "वज्र",
+        "Siddhi": _language == 'Kannada' ? "ಸಿದ್ಧಿ" : "सिद्धि", "Vyatipaata": _language == 'Kannada' ? "ವ್ಯತೀಪಾತ" : "व्यतीपात", "Variyaan": _language == 'Kannada' ? "ವರಿಯಾನ್" : "वरीयान्",
+        "Pari": _language == 'Kannada' ? "ಪರಿಘ" : "परिघ", "Shiva": _language == 'Kannada' ? "ಶಿವ" : "शिव", "Siddha": _language == 'Kannada' ? "ಸಿದ್ಧ" : "सिद्ध",
+        "Saadhya": _language == 'Kannada' ? "ಸಾಧ್ಯ" : "साध्य", "Shubha": _language == 'Kannada' ? "ಶುಭ" : "शुभ", "Vaidhruti": _language == 'Kannada' ? "ವೈಧೃತಿ" : "वैधृति",
       },
       "karana": {
-        "Bava karna": _language == 'Kannada' ? "ಬವ" : "बव", "Balava karna": _language == 'Kannada' ? "ಬಾಲವ" : "बालव",
+        "Kaulava": _language == 'Kannada' ? "ಕೌಲವ" : "कौलव", "Garaja": _language == 'Kannada' ? "ಗರಜ" : "गरज", "Bava": _language == 'Kannada' ? "ಬವ" : "बव",
+        "Bhadra": _language == 'Kannada' ? "ಭದ್ರಾ" : "भद्रा", "Balava": _language == 'Kannada' ? "ಬಾಲವ" : "बालव", "Taitila": _language == 'Kannada' ? "ತೈತಿಲ" : "तैतिल",
+        "Vanija": _language == 'Kannada' ? "ವಾಣಿಜ" : "वणिज", "Chatushpat": _language == 'Kannada' ? "ಚತುಷ್ಪಾದ್" : "चतुष्पाद", "Kimstugna": _language == 'Kannada' ? "ಕಿಂಸ್ತುಘ್ನ" : "किंस्तुघ्न",
+        "Shakuni": _language == 'Kannada' ? "ಶಕುನಿ" : "शकुनि", "Nagavan": _language == 'Kannada' ? "ನಾಗವಾನ್" : "नागवान",
       }
     };
     return translations[category]?[val] ?? val; 
@@ -241,20 +255,36 @@ class PanchangaHomeScreen extends StatelessWidget {
     return Container(decoration: BoxDecoration(gradient: LinearGradient(colors: state.themeMode == ThemeMode.light ? [Colors.orange.shade50, Colors.white] : [Colors.grey.shade900, Colors.black], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
       child: ListView(padding: const EdgeInsets.all(16), children: [
         _buildHeader(state.selectedDate),
+        
+        Row(children: [
+          Expanded(child: _buildDetailCard(state.t("ಸೂರ್ಯೋದಯ", "Sunrise", "सूर्योदय"), d['sunrise'], Icons.wb_sunny_outlined, Colors.orange, isVertical: true)),
+          Expanded(child: _buildDetailCard(state.t("ಸೂರ್ಯಾಸ್ತ", "Sunset", "सूर्यास्त"), d['sunset'], Icons.nightlight_round, Colors.deepPurple, isVertical: true)),
+        ]),
         const SizedBox(height: 10),
+
         _buildDetailCard(state.t("ಸಂವತ್ಸರ", "Samvatsara", "ಸಂವತ್ಸರ"), state.translateData('samvastara', d['samvastara']), Icons.calendar_month, Colors.brown),
-        _buildDetailCard(state.t("ಅಯನ", "Ayana", "ಅಯನ"), state.translateData('ayana', d['aayana']), Icons.swap_calls, Colors.indigo),
-        _buildDetailCard(state.t("ಋತು", "Rutu", "ಋತು"), state.translateData('rutu', d['rutu']), Icons.eco, Colors.green),
+        _buildDetailCard(state.t("ಅಯನ", "Ayana", "अयन"), state.translateData('ayana', d['aayana']), Icons.swap_calls, Colors.indigo),
+        _buildDetailCard(state.t("ಋತು", "Rutu", "ऋतु"), state.translateData('rutu', d['rutu']), Icons.eco, Colors.green),
         _buildDetailCard(state.t("ಮಾಸ", "Masa", "ಮಾಸ"), state.translateData('masa', d['masa']), Icons.layers, Colors.orange),
-        _buildDetailCard(state.t("ಪಕ್ಷ", "Paksha", "ಪಕ್ಷ"), state.translateData('paksha', d['paksha']), Icons.brightness_6, Colors.blueGrey),
-        _buildDetailCard(state.t("ತಿಥಿ", "Tithi", "ತಿಥಿ"), state.translateData('tithi', d['tithi']), Icons.brightness_3, Colors.purple),
-        _buildDetailCard(state.t("ನಕ್ಷತ್ರ", "Nakshatra", "ನಕ್ಷತ್ರ"), state.translateData('nakshatra', d['nakshatra']), Icons.auto_awesome, Colors.amber),
-        _buildDetailCard(state.t("ಯೋಗ", "Yoga", "ಯೋಗ"), state.translateData('yoga', d['yoga']), Icons.all_inclusive, Colors.teal),
-        _buildDetailCard(state.t("ಕರಣ", "Karana", "ಕರಣ"), state.translateData('karana', d['karana']), Icons.category, Colors.blue),
+        _buildDetailCard(state.t("ಪಕ್ಷ", "Paksha", "पक्ष"), state.translateData('paksha', d['paksha']), Icons.brightness_6, Colors.blueGrey),
+        _buildDetailCard(state.t("ತಿಥಿ", "Tithi", "तिथि"), state.translateData('tithi', d['tithi']), Icons.brightness_3, Colors.purple),
+        _buildDetailCard(state.t("ನಕ್ಷತ್ರ", "Nakshatra", "नक्षत्र"), state.translateData('nakshatra', d['nakshatra']), Icons.auto_awesome, Colors.amber),
+        _buildDetailCard(state.t("ಯೋಗ", "Yoga", "योग"), state.translateData('yoga', d['yoga']), Icons.all_inclusive, Colors.teal),
+        _buildDetailCard(state.t("ಕರಣ", "Karana", "करण"), state.translateData('karana', d['karana']), Icons.category, Colors.blue),
       ]));
   }
   Widget _buildHeader(DateTime date) { return Container(padding: const EdgeInsets.symmetric(vertical: 24), margin: const EdgeInsets.only(bottom: 20), decoration: BoxDecoration(color: Colors.orange, borderRadius: BorderRadius.circular(15)), child: Column(children: [Text(DateFormat('EEEE').format(date).toUpperCase(), style: const TextStyle(color: Colors.white70, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 2)), const SizedBox(height: 4), Text(DateFormat('d MMMM yyyy').format(date), style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold))])); }
-  Widget _buildDetailCard(String l, String v, IconData i, Color c) { return Card(child: ListTile(leading: Icon(i, color: c), title: Text(l, style: const TextStyle(fontSize: 11, color: Colors.grey)), trailing: Text(v, style: const TextStyle(fontWeight: FontWeight.bold)))); }
+  
+  Widget _buildDetailCard(String l, String v, IconData i, Color c, {bool isVertical = false}) { 
+    return Card(
+      child: ListTile(
+        leading: Icon(i, color: c), 
+        title: Text(l, style: const TextStyle(fontSize: 11, color: Colors.grey)), 
+        subtitle: isVertical ? Text(v ?? "---", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)) : null,
+        trailing: isVertical ? null : Text(v ?? "---", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18))
+      )
+    ); 
+  }
 }
 
 class MonthlyCalendarScreen extends StatelessWidget {
@@ -264,14 +294,14 @@ class MonthlyCalendarScreen extends StatelessWidget {
     final state = Provider.of<AppState>(context);
     return Column(children: [
       TableCalendar(
-        firstDay: DateTime.utc(2025, 1, 1), 
-        lastDay: DateTime.utc(2026, 12, 31), 
+        firstDay: DateTime.utc(2026, 1, 1), 
+        lastDay: DateTime.utc(2026, 3, 19), 
         focusedDay: state.selectedDate, 
         calendarFormat: CalendarFormat.month, 
         availableCalendarFormats: const {CalendarFormat.month: 'Month'}, 
         selectedDayPredicate: (d) => isSameDay(state.selectedDate, d), 
         onDaySelected: (s, f) => state.setSelectedDate(s), 
-        enabledDayPredicate: (day) => day.isAfter(DateTime(2025, 12, 7)) && day.isBefore(DateTime(2026, 03, 20)),
+        enabledDayPredicate: (day) => day.isAfter(DateTime(2025, 12, 31)) && day.isBefore(DateTime(2026, 03, 20)),
         calendarStyle: const CalendarStyle(
           selectedDecoration: BoxDecoration(color: Colors.orange, shape: BoxShape.circle),
           disabledTextStyle: TextStyle(color: Colors.grey),
